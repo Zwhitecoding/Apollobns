@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APOLLO BNS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      color: white;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #selectionScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .option-container {
+      width: 90%;
+      max-width: 400px;
+      margin: 15px auto;
+    }
+
+    .shooting-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .shooting-stars div {
+      position: absolute;
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(-45deg, white, transparent);
+      opacity: 0.8;
+      animation: shoot 2s linear infinite;
+    }
+    @keyframes shoot {
+      0% { transform: translateX(0) translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateX(-800px) translateY(800px) rotate(45deg); opacity: 0; }
+    }
+    .header-svg {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 30px;
+    }
+    svg text {
+      text-transform: uppercase;
+      font-size: 2rem;
+      fill: none;
+      stroke: white;
+      stroke-width: 4;
+      stroke-dasharray: 0 50%;
+      animation: stroke 5s infinite alternate;
+    }
+    @keyframes stroke {
+      0% { stroke: white; stroke-width: 0; stroke-dashoffset: 25%; stroke-dasharray: 0 50%; }
+      70% { stroke: white; }
+      80% { stroke: white; stroke-width: 3; }
+      100% { stroke: white; stroke-width: 0; stroke-dashoffset: -25%; stroke-dasharray: 50% 0; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      padding: 30px;
+    }
+    .option-container {
+      width: 90%;
+      max-width: 400px;
+      margin: 15px auto;
+    }
+    .option p {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-top: 10px;
+      max-width: 250px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .selection button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .selection button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 2px solid white;
+      border-radius: 8px;
+      box-sizing: border-box;
+      animation: stroke 5s infinite alternate;
+      pointer-events: none;
+    }
+    .full-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+    .close-btn {
+      align-self: flex-end;
+      margin: 20px;
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px;
+      width: 100%;
+    }
+    .card {
+      flex: 0 0 250px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 450px;
+    }
+    .card img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .caption {
+      font-size: 1rem;
+      margin-top: 8px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timestamp {
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+    .expanded-view {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 20;
+    }
+    .expanded-view img {
+      max-width: 90%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+    .back-arrow {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00adb5;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    @media (max-width: 480px) {
+      svg text { font-size: 1.5rem; }
+      .selection button { font-size: 1.2rem; }
+      .card { flex: 0 0 200px; height: 380px; }
+      .card img { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shooting-stars">
+    <div style="top:10%;left:80%;animation-delay:0s;"></div>
+    <div style="top:30%;left:60%;animation-delay:1s;"></div>
+    <div style="top:50%;left:90%;animation-delay:2s;"></div>
+    <div style="top:70%;left:40%;animation-delay:0.5s;"></div>
+    <div style="top:85%;left:20%;animation-delay:1.5s;"></div>
+  </div>
+
+  <svg class="header-svg">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">APOLLO BNS</text>
+  </svg>
+
+  <div id="selectionScreen">
+    <div class="glass option-container">
+      <div class="option">
+        <button id="midmanBtn">MIDMAN</button>
+        <p>IT WILL SHOW ALL MIDMAN TRANSACTIONS OF APOLLO</p>
+      </div>
+    </div>
+    <div class="glass option-container">
+      <div class="option">
+        <button id="buySellBtn">BUY & SELL</button>
+        <p>IT WILL SHOW ALL BUY & SELL TRANSACTIONS OF APOLLO</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-screen" id="fullScreenView">
+    <button class="close-btn" id="closeBtn">Close</button>
+    <div class="carousel" id="transactionContainer"></div>
+  </div>
+
+  <div class="expanded-view" id="expandedView">
+    <img id="expandedImage" src="" alt="Expanded Transaction">
+    <button class="back-arrow" id="backArrow">Back</button>
+  </div>
+
+  <script>
+    const selectionScreen = document.getElementById('selectionScreen');
+    const fullScreenView = document.getElementById('fullScreenView');
+    const transactionContainer = document.getElementById('transactionContainer');
+    const closeBtn = document.getElementById('closeBtn');
+    const midmanBtn = document.getElementById('midmanBtn');
+    const buySellBtn = document.getElementById('buySellBtn');
+    const expandedView = document.getElementById('expandedView');
+    const expandedImage = document.getElementById('expandedImage');
+    const backArrow = document.getElementById('backArrow');
+
+    function enableSwipe(container) {
+      let startX = 0;
+      let scrollLeft = 0;
+      let isDown = false;
+      container.addEventListener('touchstart', e => {
+        isDown = true;
+        startX = e.touches[0].pageX;
+        scrollLeft = container.scrollLeft;
+      });
+      container.addEventListener('touchend', () => { isDown = false; });
+      container.addEventListener('touchmove', e => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX;
+        const walk = (startX - x) * 1.2;
+        container.scrollLeft = scrollLeft + walk;
+      });
+    }
+
+    async function fetchTransactions(type) {
+      const res = await fetch('/api/transactions');
+      const data = await res.json();
+      transactionContainer.innerHTML = '';
+      data.filter(t => t.type === type).forEach(t => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+          <img src="${t.image}" alt="Transaction Image" />
+          <div class="caption">${t.caption}</div>
+          <div class="timestamp">${new Date(t.created_at).toLocaleString()}</div>
+        `;
+        card.querySelector('img').addEventListener('click', () => {
+          expandedImage.src = t.image;
+          expandedView.style.display = 'flex';
+        });
+        transactionContainer.appendChild(card);
+      });
+      enableSwipe(transactionContainer);
+    }
+
+    function openFullScreen(type) {
+      selectionScreen.style.display = 'none';
+      fullScreenView.style.display = 'flex';
+      fetchTransactions(type);
+    }
+
+    function closeFullScreen() {
+      fullScreenView.style.display = 'none';
+      selectionScreen.style.display = 'block';
+    }
+
+    midmanBtn.addEventListener('click', () => openFullScreen('midman'));
+    buySellBtn.addEventListener('click', () => openFullScreen('buy-sell'));
+    closeBtn.addEventListener('click', closeFullScreen);
+    backArrow.addEventListener('click', () => {
+      expandedView.style.display = 'none';
+      expandedImage.src = '';
+    });
+  </script>
+</body>
+</html>
